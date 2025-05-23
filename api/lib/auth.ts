@@ -11,7 +11,7 @@ function logTokenPreview(label: string, token: string) {
     `[${label}] Token: ${token}`
   );
 }
-
+ 
 /**
  * Middleware for session cookie-based auth using the Stytch FE SDK
  */
