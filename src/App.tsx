@@ -6,7 +6,7 @@ import TodoEditor from "./Todos.tsx";
 import {Authenticate, Authorize, Login, Logout} from "./Auth.tsx";
 
 const stytch = new StytchUIClient(import.meta.env.VITE_STYTCH_PUBLIC_TOKEN ?? '');
-
+console.log(import.meta.env.VITE_STYTCH_PUBLIC_TOKEN)
 function App() {
     return (
         <StytchProvider stytch={stytch}>

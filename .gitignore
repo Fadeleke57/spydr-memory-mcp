@@ -27,3 +27,6 @@ dist-ssr
 .wrangler
 .dev.vars*
 !.dev.vars.template
+
+# env
+.env.prod
