@@ -41,6 +41,10 @@
   },
   "kv_namespaces": [
     {
+      "binding": "TODOS",
+      "id": "8579799313be4e2aa06445981011b13e"
+    },
+    {
       "binding": "MEMORY",
       "id": "8971e0d721ee4d3c95479107eb72c74f"
     }

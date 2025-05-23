@@ -2,11 +2,11 @@
 // Runtime types generated with workerd@1.20250317.0 2025-03-19 
 declare namespace Cloudflare {
 	interface Env {
-		TODOS: KVNamespace;
-		STYTCH_PROJECT_ID: "<YOUR_PROJECT_ID_FROM_STYTCH_DASHBOARD>";
-		MCP_OBJECT: DurableObjectNamespace<import("./api/index").TodoMCP>;
-		ASSETS: Fetcher;
-	}
+    MEMORY: KVNamespace;
+    STYTCH_PROJECT_ID: "project-live-ebb7735e-eebd-465b-966d-046dd8475296";
+    MCP_OBJECT: DurableObjectNamespace<import("./api/index").TodoMCP>;
+    ASSETS: Fetcher;
+  }
 }
 interface Env extends Cloudflare.Env {}
 
