@@ -11,7 +11,7 @@ function App() {
     return (
         <StytchProvider stytch={stytch}>
             <main>
-                <h1>TODO App MCP Demo</h1>
+                <h1>SPYDR MCP</h1>
                     <Router>
                         <Routes>
                             <Route path="/oauth/authorize" element={<Authorize/>}/>
