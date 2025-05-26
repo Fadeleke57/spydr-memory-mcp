@@ -7,11 +7,31 @@ import { getCookie } from "hono/cookie";
  * Logs a partial token for debugging without exposing the whole JWT
  */
 function logTokenPreview(label: string, token: string) {
-  console.log(
-    `[${label}] Token: ${token}`
-  );
+  console.log(`[${label}] Token: ${token}`);
 }
- 
+/**
+ * Validates the JWT using JOSE and Stytch's JWKS endpoint
+ */
+async function validateStytchJWT(token: string, env: Env) {
+  if (!jwks) {
+    console.log("[validateStytchJWT] JWKS not initialized");
+    const jwksUrl = getStytchOAuthEndpointUrl(env, ".well-known/jwks.json");
+    console.log(`[validateStytchJWT] Initializing JWKS from: ${jwksUrl}`);
+    jwks = createRemoteJWKSet(new URL(jwksUrl));
+  }
+
+  logTokenPreview("validateStytchJWT", token);
+  console.log("[JWKS] JWKS initialized", jwks);
+  const response = await jwtVerify(token, jwks, {
+    audience: env.STYTCH_PROJECT_ID,
+    issuer: [`stytch.com/${env.STYTCH_PROJECT_ID}`],
+    typ: "JWT",
+    algorithms: ["RS256"],
+  });
+  console.log("[validateStytchJWT] JWT verified", response.payload);
+  return response;
+}
+
 /**
  * Middleware for session cookie-based auth using the Stytch FE SDK
  */
@@ -29,12 +49,12 @@ export const stytchSessionAuthMiddleware = createMiddleware<{
   );
 
   try {
+    console.log("[Session Cookie]", sessionCookie);
     const verifyResult = await validateStytchJWT(sessionCookie ?? "", c.env);
     console.log(
       "[SessionMiddleware] JWT verified. Claims:",
       verifyResult.payload
     );
-
     c.set("userID", verifyResult.payload.sub!);
   } catch (error) {
     console.error("[SessionMiddleware] Authentication failed:", error);
@@ -94,26 +114,6 @@ export const stytchBearerTokenAuthMiddleware = createMiddleware<{
 });
 
 let jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
-
-/**
- * Validates the JWT using JOSE and Stytch's JWKS endpoint
- */
-async function validateStytchJWT(token: string, env: Env) {
-  if (!jwks) {
-    const jwksUrl = getStytchOAuthEndpointUrl(env, ".well-known/jwks.json");
-    console.log(`[validateStytchJWT] Initializing JWKS from: ${jwksUrl}`);
-    jwks = createRemoteJWKSet(new URL(jwksUrl));
-  }
-
-  logTokenPreview("validateStytchJWT", token);
-
-  return await jwtVerify(token, jwks, {
-    audience: env.STYTCH_PROJECT_ID,
-    issuer: [`stytch.com/${env.STYTCH_PROJECT_ID}`],
-    typ: "JWT",
-    algorithms: ["RS256"],
-  });
-}
 
 /**
  * Determines the correct Stytch public URL based on environment
