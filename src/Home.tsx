@@ -18,7 +18,6 @@ const Home = withLoginRequired(() => {
             {`"spydr-memory": {
   "command": "npx",
   "args": [
-    "-y",
     "mcp-remote@latest",
     "https://memory.spydr.dev/sse",
     "--host",
