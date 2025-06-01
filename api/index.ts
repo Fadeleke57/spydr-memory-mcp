@@ -18,7 +18,6 @@ export default new Hono<{ Bindings: Env }>()
 
   // Serve the OAuth Authorization Server response for Dynamic Client Registration
   .get("/.well-known/oauth-authorization-server", async (c) => {
-    const url = new URL(c.req.url);
     return c.json({
       issuer: c.env.STYTCH_PROJECT_ID,
       authorization_endpoint: `${c.env.CLIENT_URL}/oauth/authorize`, // Link to the OAuth Authorization screen implemented within the Next.JS UI
