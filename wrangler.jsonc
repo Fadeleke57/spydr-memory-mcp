@@ -28,13 +28,23 @@
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["TodoMCP"]
+      "new_sqlite_classes": ["MemoryMCP"]
+    },
+    {
+      "tag": "rename-TODO-TO-MEMORY",
+      "renamed_classes": [
+        {
+          "from": "TodoMCP",
+          "to": "MemoryMCP"
+        }
+      ],
+      "deleted_classes": ["TodoMCP"]
     }
   ],
   "durable_objects": {
     "bindings": [
       {
-        "class_name": "TodoMCP",
+        "class_name": "MemoryMCP",
         "name": "MCP_OBJECT"
       }
     ]
