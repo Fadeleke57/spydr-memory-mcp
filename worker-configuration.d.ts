@@ -6,7 +6,7 @@ declare namespace Cloudflare {
     TODOS: KVNamespace;
     STYTCH_PROJECT_ID: "project-live-ebb7735e-eebd-465b-966d-046dd8475296";
     CLIENT_URL: "https://memory.spydr.dev";
-    MCP_OBJECT: DurableObjectNamespace<import("./api/index").TodoMCP>;
+    MCP_OBJECT: DurableObjectNamespace<import("./api/index").MemoryMCP>;
     ASSETS: Fetcher;
   }
 }
