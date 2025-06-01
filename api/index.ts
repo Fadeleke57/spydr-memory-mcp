@@ -13,6 +13,10 @@ export { MemoryMCP };
 export default new Hono<{ Bindings: Env }>()
   .use(cors())
 
+  .get("/health", (c) => c.text("OK"))
+
+  .get("/", (c) => c.html("<p>Welcome to the Spydrweb Memory API!</p>"))
+
   // Mount the MEMORY API underneath us
   .route("/api", MemoryAPI)
 
