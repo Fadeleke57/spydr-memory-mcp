@@ -30,16 +30,6 @@
       "tag": "v1",
       "new_sqlite_classes": ["MemoryMCP"]
     },
-    {
-      "tag": "rename-TODO-TO-MEMORY",
-      "renamed_classes": [
-        {
-          "from": "TodoMCP",
-          "to": "MemoryMCP"
-        }
-      ],
-      "deleted_classes": ["TodoMCP"]
-    }
   ],
   "durable_objects": {
     "bindings": [
@@ -50,10 +40,6 @@
     ]
   },
   "kv_namespaces": [
-    {
-      "binding": "TODOS",
-      "id": "e2491ac4ffde4bd8956f3eeec57eb6de"
-    },
     {
       "binding": "MEMORY",
       "id": "8971e0d721ee4d3c95479107eb72c74f"
