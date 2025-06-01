@@ -12,7 +12,7 @@
     "enabled": true
   },
   "dev": {
-    "port": 3000
+    "port": 9000
   },
   /**
    * Smart Placement
