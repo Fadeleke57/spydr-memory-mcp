@@ -5,7 +5,7 @@ import {Todo} from "../types";
  * This includes operations such as retrieving todos, adding new todos,
  * deleting existing todos, and marking todos as completed.
  */
-class TodoService {
+class MemoryService {
     constructor(
         private env: Env,
         private userID: string,
@@ -57,4 +57,4 @@ class TodoService {
     }
 }
 
-export const todoService = (env: Env, userID: string) => new TodoService(env, userID)
+export const memoryService = (env: Env, userID: string) => new MemoryService(env, userID)
