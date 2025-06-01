@@ -13,7 +13,7 @@ class MemoryService {
     }
 
     get = async (): Promise<Todo[]> => {
-        const todos = await this.env.TODOS.get<Todo[]>(this.userID, "json")
+        const todos = await this.env.MEMORY.get<Todo[]>(this.userID, "json")
         return todos || [];
     }
 
@@ -25,7 +25,7 @@ class MemoryService {
             return t1.completed ? 1 : -1;
         });
 
-        await this.env.TODOS.put(this.userID, JSON.stringify(sorted))
+        await this.env.MEMORY.put(this.userID, JSON.stringify(sorted))
         return sorted
     }
 
