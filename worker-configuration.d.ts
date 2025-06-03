@@ -5,6 +5,7 @@ declare namespace Cloudflare {
     MEMORY: KVNamespace;
     STYTCH_PROJECT_ID: "project-live-afb7b471-8371-4890-9eab-6f683b51fe32";
     CLIENT_URL: "https://memory.spydr.dev";
+    API_URL: "https://vercel.spydr.dev";
     MCP_OBJECT: DurableObjectNamespace<import("./api/index").MemoryMCP>;
     ASSETS: Fetcher;
   }

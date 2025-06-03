@@ -38,24 +38,28 @@ async function validateStytchJWT(token: string, env: Env) {
 export const stytchSessionAuthMiddleware = createMiddleware<{
   Variables: {
     userID: string;
+    sessionToken: string;
   };
   Bindings: Env;
 }>(async (c, next) => {
   const sessionCookie = getCookie(c, "stytch_session_jwt");
+  const sessionToken = getCookie(c, "stytch_session");
   console.log(
     `[SessionMiddleware] Incoming cookie: ${
-      sessionCookie ? "Present" : "Missing"
+      sessionCookie && sessionToken ? "Present" : "Missing"
     }`
   );
 
   try {
     console.log("[Session Cookie]", sessionCookie);
+    console.log("[Session Token]", sessionToken);
     const verifyResult = await validateStytchJWT(sessionCookie ?? "", c.env);
     console.log(
       "[SessionMiddleware] JWT verified. Claims:",
       verifyResult.payload
     );
     c.set("userID", verifyResult.payload.sub!);
+    c.set("sessionToken", sessionToken ?? "");
   } catch (error) {
     console.error("[SessionMiddleware] Authentication failed:", error);
     throw new HTTPException(401, { message: "Unauthenticated" });

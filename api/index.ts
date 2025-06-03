@@ -3,7 +3,6 @@ import {
   getStytchOAuthEndpointUrl,
   stytchBearerTokenAuthMiddleware,
 } from "./lib/auth";
-import { MemoryAPI } from "./MemoryAPI.ts";
 import { cors } from "hono/cors";
 import { Hono } from "hono";
 
@@ -16,9 +15,6 @@ export default new Hono<{ Bindings: Env }>()
   .get("/health", (c) => c.text("OK"))
 
   .get("/", (c) => c.html("<p>Welcome to the Spydrweb Memory API!</p>"))
-
-  // Mount the MEMORY API underneath us
-  .route("/api", MemoryAPI)
 
   // Serve the OAuth Authorization Server response for Dynamic Client Registration
   .get("/.well-known/oauth-authorization-server", async (c) => {
