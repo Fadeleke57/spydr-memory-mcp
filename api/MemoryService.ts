@@ -1,7 +1,7 @@
 class MemoryService {
   private API_URL: string;
   constructor(private env: Env, private accessToken: string) {
-    const baseUrl = env.API_URL;
+    const baseUrl = this.env.API_URL;
     if (!baseUrl) {
       console.error("[MemoryService] API_URL is not configured.");
       throw new Error("API_URL is not configured.");
