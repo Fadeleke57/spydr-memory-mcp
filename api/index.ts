@@ -12,9 +12,11 @@ export { MemoryMCP };
 export default new Hono<{ Bindings: Env }>()
   .use(cors())
 
-  .get("/health", (c) => c.text("OK"))
+  .get("/health", (c) => {
+    return c.json({ status: 200, message: "ok" });
+  })
 
-  .get("/", (c) => c.html("<p>Welcome to the Spydrweb Memory API!</p>"))
+  .get("/", (c) => c.json({ message: "Welcome to the Spydr Memory MCP" }))
 
   // Serve the OAuth Authorization Server response for Dynamic Client Registration
   .get("/.well-known/oauth-authorization-server", async (c) => {

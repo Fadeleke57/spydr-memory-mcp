@@ -178,16 +178,24 @@ export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
           .number()
           .int()
           .optional()
-          .default(20)
+          .default(5)
           .describe("Maximum number of search results to return."),
+        boundary: z
+          .boolean()
+          .optional()
+          .default(true)
+          .describe(
+            "Whether to search within the boundaries of the web or search all the user's sources if the webId is not provided."
+          ),
       },
-      async ({ webId, query, sources, limit }) => {
+      async ({ webId, query, sources, limit, boundary }) => {
         try {
           const data = await this.webService.searchSourcesInWeb(
             webId,
             query,
             sources,
-            limit
+            limit,
+            boundary
           );
           return this.formatResponse(
             `Source search in web '${webId}' completed.`,

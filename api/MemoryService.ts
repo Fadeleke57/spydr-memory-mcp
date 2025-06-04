@@ -82,11 +82,12 @@ class MemoryService {
     webId: string,
     query: string,
     sources?: string[],
-    limit: number = 20
+    limit: number = 5,
+    boundary: boolean = true
   ) {
-    let apiPath = `/search/all?webId=${encodeURIComponent(
+    let apiPath = `/sources/search/all?webId=${encodeURIComponent(
       webId
-    )}&query=${encodeURIComponent(query)}&limit=${limit}`;
+    )}&query=${encodeURIComponent(query)}&limit=${limit}&boundary=${boundary}`;
     if (sources && sources.length > 0) {
       sources.forEach((sourceId) => {
         apiPath += `&sources=${encodeURIComponent(sourceId)}`;
@@ -102,7 +103,7 @@ class MemoryService {
   async getSourceById(sourceId: string) {
     // Ensure the path starts with a slash, and sourceId is URI encoded if it can contain special characters.
     // However, path parameters are typically not encoded in the path template itself.
-    return this.makeRequest(`/${encodeURIComponent(sourceId)}`, "GET");
+    return this.makeRequest(`/sources/${encodeURIComponent(sourceId)}`, "GET");
   }
 
   /**
@@ -110,7 +111,7 @@ class MemoryService {
    * Corresponds to Python endpoint: GET /id?webId={webId}
    */
   async getWebById(webId: string) {
-    return this.makeRequest(`/id?webId=${encodeURIComponent(webId)}`, "GET");
+    return this.makeRequest(`/webs/id?webId=${encodeURIComponent(webId)}`, "GET");
   }
 }
 
