@@ -1,5 +1,6 @@
 class MemoryService {
   private API_URL: string;
+
   constructor(private env: Env, private accessToken: string) {
     const baseUrl = this.env.API_URL;
     if (!baseUrl) {
@@ -14,7 +15,7 @@ class MemoryService {
     method: "GET" | "POST" = "GET",
     body?: any
   ): Promise<any> {
-    const url = `${this.API_URL}${path}`; // path should start with '/'
+    const url = `${this.API_URL}/api/v1${path}`; // path should start with '/'
 
     if (!this.accessToken) {
       console.error(
@@ -60,38 +61,27 @@ class MemoryService {
    * Searches for webs based on a query.
    * Corresponds to Python endpoint: GET /search
    */
-  async findWebs(
-    query: string,
-    userId: string,
-    visibility?: "Public" | "Private"
-  ) {
-    let apiPath = `/search?query=${encodeURIComponent(
+  async searchWebs(query: string, scope: "User.all" | "All" = "User.all") {
+    const apiPath = `/search/webs?query=${encodeURIComponent(
       query
-    )}&userId=${encodeURIComponent(userId)}`;
-    if (visibility) {
-      apiPath += `&visibility=${encodeURIComponent(visibility)}`;
-    }
+    )}&scope=${encodeURIComponent(scope)}`;
     return this.makeRequest(apiPath, "GET");
   }
 
-  /**
-   * Searches sources within a specific web.
-   * Corresponds to Python endpoint: GET /search/all
-   */
-  async searchSourcesInWeb(
-    webId: string,
+  async searchMemories(
     query: string,
-    sources?: string[],
-    limit: number = 5,
-    boundary: boolean = true
+    scope: "User.all" | "Web" = "User.all",
+    webId?: string,
+    sourceId?: string
   ) {
-    let apiPath = `/sources/search/all?webId=${encodeURIComponent(
-      webId
-    )}&query=${encodeURIComponent(query)}&limit=${limit}&boundary=${boundary}`;
-    if (sources && sources.length > 0) {
-      sources.forEach((sourceId) => {
-        apiPath += `&sources=${encodeURIComponent(sourceId)}`;
-      });
+    let apiPath = `/search/memories?query=${encodeURIComponent(
+      query
+    )}&scope=${encodeURIComponent(scope)}`;
+    if (webId) {
+      apiPath += `&webId=${encodeURIComponent(webId)}`;
+    }
+    if (sourceId) {
+      apiPath += `&sourceId=${encodeURIComponent(sourceId)}`;
     }
     return this.makeRequest(apiPath, "GET");
   }
@@ -99,20 +89,23 @@ class MemoryService {
   /**
    * Retrieves a specific source by its ID.
    * Corresponds to Python endpoint: GET /{source_id}
-   */
+  
   async getSourceById(sourceId: string) {
     // Ensure the path starts with a slash, and sourceId is URI encoded if it can contain special characters.
     // However, path parameters are typically not encoded in the path template itself.
     return this.makeRequest(`/sources/${encodeURIComponent(sourceId)}`, "GET");
-  }
+  } */
 
   /**
    * Retrieves a specific web by its ID.
    * Corresponds to Python endpoint: GET /id?webId={webId}
-   */
+   
   async getWebById(webId: string) {
-    return this.makeRequest(`/webs/id?webId=${encodeURIComponent(webId)}`, "GET");
-  }
+    return this.makeRequest(
+      `/webs/id?webId=${encodeURIComponent(webId)}`,
+      "GET"
+    );
+  }*/
 }
 
 // Factory function to create instances of MemoryService

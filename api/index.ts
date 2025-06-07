@@ -42,7 +42,7 @@ export default new Hono<{ Bindings: Env }>()
   .route("/sse", new Hono().mount("/", MemoryMCP.serveSSE("/sse").fetch))
 
   .use("/mcp", stytchBearerTokenAuthMiddleware)
-  .route("/mcp", new Hono().mount("/", MemoryMCP.serve("/mcp").fetch))
+  .route("/mcp", new Hono().mount("/", MemoryMCP.serve("/mcp").fetch));
 
-  // Finally - serve static assets from Vite
-  .mount("/", (req, env) => env.ASSETS.fetch(req));
+// No static assets yet, but we'll add them later: TODO - Start the memory management UI
+//.mount("/", (req, env) => env.ASSETS.fetch(req));

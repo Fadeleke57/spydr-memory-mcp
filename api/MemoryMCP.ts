@@ -1,6 +1,6 @@
 import {
   McpServer,
-  ResourceTemplate,
+  /*ResourceTemplate,*/
 } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { memoryService } from "./MemoryService.ts";
@@ -10,12 +10,12 @@ import { McpAgent } from "agents/mcp";
 export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
   async init() {}
 
-  private get webService() {
+  private get memoryService() {
     if (!this.props.accessToken) {
       console.error(
         "[MemoryMCP] AccessToken is not available in props. Ensure stytchBearerTokenAuthMiddleware populates it."
       );
-      throw new Error("Access token not available for WebService.");
+      throw new Error("Access token not available for MemoryService.");
     }
     return memoryService(this.env, this.props.accessToken);
   }
@@ -60,10 +60,11 @@ export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
 
   get server() {
     const server = new McpServer({
-      name: "SpydrWeb Interaction Service (via MemoryMCP)",
+      name: "Spydr Interaction Server (via MemoryMCP)",
       version: "1.0.0",
     });
 
+    /*
     server.resource(
       "Source",
       new ResourceTemplate("spydrapp://sources/{sourceId}", {
@@ -131,29 +132,30 @@ export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
         }
       }
     );
+    */
 
     server.tool(
-      "findWebs",
-      "Search for webs (collections of sources) based on a query. Can be filtered by visibility.",
+      "FindWebs",
+      "Search for Webs (collections of related memories). Use this only if the user explicitly asks to search for webs, or if you need to narrow the memory search scope by webId.",
       {
-        query: z.string().describe("The query to search for"),
-        visibility: z
-          .enum(["Public", "Private"])
+        query: z
+          .string()
+          .describe("The search query for finding relevant webs."),
+        scope: z
+          .enum(["User.all", "All"])
           .optional()
-          .describe("Filter webs by visibility (Public or Private)."),
+          .default("User.all")
+          .describe(
+            `"User.all" searches only the user's own webs. "All" includes both public webs and the user's private ones.`
+          ),
       },
-      async ({ query, visibility }) => {
+      async ({ query, scope }) => {
         try {
-          const userId = this.props.claims.sub; // need a better way to get this
-          const data = await this.webService.findWebs(
-            query,
-            userId,
-            visibility
-          );
-          return this.formatResponse("Webs searched successfully", data);
+          const data = await this.memoryService.searchWebs(query, scope);
+          return this.formatResponse("Successfully found matching webs.", data);
         } catch (e: any) {
-          console.error(`[MemoryMCP tool findWebs] Error:`, e);
-          return this.formatErrorResponse("Failed to find webs.", {
+          console.error(`[MCP Tool: Find Webs] Error:`, e);
+          return this.formatErrorResponse("Could not find any webs.", {
             message: e.message,
           });
         }
@@ -161,52 +163,66 @@ export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
     );
 
     server.tool(
-      "searchSourcesInWeb",
-      "Search through sources within a specific web using a semantic query.",
+      "FindMemories",
+      "Search for memories using a semantic query. Optionally, limit the search to a specific web or memory.",
       {
-        webId: z.string().describe("The ID of the web to search within."),
         query: z
           .string()
-          .describe("The semantic query string to search for within sources."),
-        sources: z
-          .array(z.string())
-          .optional()
           .describe(
-            "Optional list of specific source IDs to filter by within the web."
+            "The semantic query used to search within the user's memories."
           ),
-        limit: z
-          .number()
-          .int()
+        scope: z
+          .enum(["User.all", "Web"])
           .optional()
-          .default(5)
-          .describe("Maximum number of search results to return."),
-        boundary: z
-          .boolean()
-          .optional()
-          .default(true)
+          .default("User.all")
           .describe(
-            "Whether to search within the boundaries of the web or search all the user's sources if the webId is not provided."
+            `"User.all" searches across all of the user's webs. "Web" restricts the search to a specific web (webId or sourceId required).`
+          ),
+        webId: z
+          .string()
+          .optional()
+          .describe(
+            "The ID of the web to search within. Required if scope is 'Web' and a sourceId is not provided."
+          ),
+        sourceId: z
+          .string()
+          .optional()
+          .describe(
+            "Optional. The ID of a specific memory (source) to search within. Only use if the user clearly refers to a specific memory and make sure to set the scope to 'Web'."
           ),
       },
-      async ({ webId, query, sources, limit, boundary }) => {
+      async ({ webId, query, sourceId, scope }) => {
+        let parsedWebId, parsedSourceId;
+        if (webId) {
+          parsedWebId = webId
+            .replace("@web-", "")
+            .replace("web-", "")
+            .replace("web", "")
+            .replace("@", "");
+        }
+        if (sourceId) {
+          parsedSourceId = sourceId
+            .replace("@memory-", "")
+            .replace("memory-", "")
+            .replace("memory", "")
+            .replace("@", "");
+        }
         try {
-          const data = await this.webService.searchSourcesInWeb(
-            webId,
+          const data = await this.memoryService.searchMemories(
             query,
-            sources,
-            limit,
-            boundary
+            scope,
+            parsedWebId,
+            parsedSourceId
           );
           return this.formatResponse(
-            `Source search in web '${webId}' completed.`,
+            "Memory search completed successfully.",
             data
           );
         } catch (e: any) {
-          console.error("[MemoryMCP tool searchSourcesInWeb] Error:", e);
-          return this.formatErrorResponse(
-            `Failed to search sources in web '${webId}'.`,
-            { message: e.message }
-          );
+          console.error("[MCP Tool: Find Memories] Error:", e);
+          return this.formatErrorResponse("Could not search memories.", {
+            message: e.message,
+          });
         }
       }
     );
