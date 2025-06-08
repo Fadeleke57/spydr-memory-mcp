@@ -59,7 +59,7 @@ class MemoryService {
    * Searches for webs based on a query.
    * Corresponds to Python endpoint: GET /search
    */
-  async searchWebs(query: string, scope: "User.all" | "All" = "User.all") {
+  async searchWebs(query: string, scope: "User.all" | "All" = "All") {
     const apiPath = `/search/webs?query=${encodeURIComponent(
       query
     )}&scope=${encodeURIComponent(scope)}`;

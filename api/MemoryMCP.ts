@@ -144,9 +144,9 @@ export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
         scope: z
           .enum(["User.all", "All"])
           .optional()
-          .default("User.all")
+          .default("All")
           .describe(
-            `"User.all" searches only the user's own webs. "All" includes both public webs and the user's private ones.`
+            `"User.all" searches only the user's own webs. "All" includes both public webs and the user's private ones. You should only use User.all if the user asks to search within their own webs.`
           ),
       },
       async ({ query, scope }) => {
