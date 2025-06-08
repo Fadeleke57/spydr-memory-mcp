@@ -195,16 +195,16 @@ export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
         let parsedWebId, parsedSourceId;
         if (webId) {
           parsedWebId = webId
-            .replace("@web-", "")
-            .replace("web-", "")
-            .replace("web", "")
+            .replace("@Web-", "")
+            .replace("Web-", "")
+            .replace("Web", "")
             .replace("@", "");
         }
         if (sourceId) {
           parsedSourceId = sourceId
-            .replace("@memory-", "")
-            .replace("memory-", "")
-            .replace("memory", "")
+            .replace("@Memory-", "")
+            .replace("Memory-", "")
+            .replace("Memory", "")
             .replace("@", "");
         }
         try {
