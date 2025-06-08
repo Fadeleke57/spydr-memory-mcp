@@ -51,9 +51,7 @@ class MemoryService {
         `[MemoryService] API call to ${url} failed: ${response.status} ${response.statusText}`,
         errorBody
       );
-      throw new Error(
-        `API request to ${url} failed with status ${response.status}: ${errorBody}`
-      );
+      throw new Error(`${response.status}: ${errorBody}`);
     }
     return response.json();
   }
@@ -61,7 +59,7 @@ class MemoryService {
    * Searches for webs based on a query.
    * Corresponds to Python endpoint: GET /search
    */
-  async searchWebs(query: string, scope: "User.all" | "All" = "User.all") {
+  async searchWebs(query: string, scope: "User.all" | "All" = "All") {
     const apiPath = `/search/webs?query=${encodeURIComponent(
       query
     )}&scope=${encodeURIComponent(scope)}`;
@@ -108,6 +106,5 @@ class MemoryService {
   }*/
 }
 
-// Factory function to create instances of MemoryService
 export const memoryService = (env: Env, accessToken: string) =>
   new MemoryService(env, accessToken);

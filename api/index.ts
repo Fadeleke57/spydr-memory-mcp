@@ -6,7 +6,7 @@ import {
 import { cors } from "hono/cors";
 import { Hono } from "hono";
 
-// Export the MCP class so the Worker runtime can find it
+// so the Worker runtime can find it
 export { MemoryMCP };
 
 export default new Hono<{ Bindings: Env }>()
@@ -18,7 +18,7 @@ export default new Hono<{ Bindings: Env }>()
 
   .get("/", (c) => c.json({ message: "Welcome to the Spydr Memory MCP" }))
 
-  // Serve the OAuth Authorization Server response for Dynamic Client Registration
+  // serve the OAuth Authorization Server response for Dynamic Client Registration
   .get("/.well-known/oauth-authorization-server", async (c) => {
     return c.json({
       issuer: c.env.STYTCH_PROJECT_ID,
@@ -37,12 +37,12 @@ export default new Hono<{ Bindings: Env }>()
     });
   })
 
-  // Let the MCP Server have a go at handling the request
+  // let the MCP Server have a go at handling the request
   .use("/sse/*", stytchBearerTokenAuthMiddleware)
   .route("/sse", new Hono().mount("/", MemoryMCP.serveSSE("/sse").fetch))
 
   .use("/mcp", stytchBearerTokenAuthMiddleware)
   .route("/mcp", new Hono().mount("/", MemoryMCP.serve("/mcp").fetch));
 
-// No static assets yet, but we'll add them later: TODO - Start the memory management UI
+// no static assets yet, but we'll add them later: TODO - Start the memory management UI
 //.mount("/", (req, env) => env.ASSETS.fetch(req));
