@@ -16,7 +16,10 @@ export default new Hono<{ Bindings: Env }>()
     return c.json({ status: 200, message: "ok" });
   })
 
-  .get("/", (c) => c.json({ message: "Welcome to the Spydr Memory MCP" }))
+  // redirect to spydr.dev/memory
+  .get("/", (c) => {
+    return c.redirect("https://spydr.dev/memory", 302);
+  })
 
   // serve the OAuth Authorization Server response for Dynamic Client Registration
   .get("/.well-known/oauth-authorization-server", async (c) => {

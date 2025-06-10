@@ -164,7 +164,7 @@ export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
 
     server.tool(
       "FindMemories",
-      "Search for memories using a semantic query. Optionally, limit the search to a specific web or memory.",
+      "Search for memories using a semantic query. Optionally, limit the search to a specific web or memory. You can also call this tool multiple times (when instructed or to improve context quality) to orchestrate fine-grained context for responses.",
       {
         query: z
           .string()
@@ -182,13 +182,13 @@ export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
           .string()
           .optional()
           .describe(
-            "The ID of the web to search within. Required if scope is 'Web' and a sourceId is not provided."
+            "The ID of the web to search within. Required if scope is 'Web' and a sourceId is not provided. If a user ever says to refer to a specific web, you should always use the webId provided by the user."
           ),
         sourceId: z
           .string()
           .optional()
           .describe(
-            "Optional. The ID of a specific memory (source) to search within. Only use if the user clearly refers to a specific memory and make sure to set the scope to 'Web'."
+            "Optional. The ID of a specific memory (source) to search within. Only use if the user clearly refers to a specific memory and make sure to set the scope to 'Web'. If a user ever says to refer to a specific memory, you should always use the sourceId provided by the user."
           ),
       },
       async ({ webId, query, sourceId, scope }) => {
