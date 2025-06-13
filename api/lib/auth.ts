@@ -3,15 +3,11 @@ import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
 import { getCookie } from "hono/cookie";
 
-/**
- * Logs a partial token for debugging without exposing the whole JWT
- */
+
 function logTokenPreview(label: string, token: string) {
   console.log(`[${label}] Token: ${token}`);
 }
-/**
- * Validates the JWT using JOSE and Stytch's JWKS endpoint
- */
+
 async function validateStytchJWT(token: string, env: Env) {
   if (!jwks) {
     console.log("[validateStytchJWT] JWKS not initialized");
@@ -32,9 +28,6 @@ async function validateStytchJWT(token: string, env: Env) {
   return response;
 }
 
-/**
- * Middleware for session cookie-based auth using the Stytch FE SDK
- */
 export const stytchSessionAuthMiddleware = createMiddleware<{
   Variables: {
     userID: string;
@@ -71,9 +64,6 @@ export const stytchSessionAuthMiddleware = createMiddleware<{
   await next();
 });
 
-/**
- * Middleware for validating Bearer tokens (used after OAuth flows)
- */
 export const stytchBearerTokenAuthMiddleware = createMiddleware<{
   Bindings: Env;
 }>(async (c, next) => {
@@ -119,9 +109,7 @@ export const stytchBearerTokenAuthMiddleware = createMiddleware<{
 
 let jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
 
-/**
- * Determines the correct Stytch public URL based on environment
- */
+// determine the correct Stytch public URL based on environment
 export function getStytchOAuthEndpointUrl(env: Env, endpoint: string): string {
   const baseURL = env.STYTCH_PROJECT_ID.includes("test")
     ? "https://test.stytch.com/v1/public"

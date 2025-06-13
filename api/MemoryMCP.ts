@@ -8,8 +8,14 @@ import { AuthenticationContext } from "../types";
 import { McpAgent } from "agents/mcp";
 
 export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
+  /**
+   * Initialize the MCP agent
+   */
   async init() {}
 
+  /**
+   * Get the MemoryService instance
+   */
   private get memoryService() {
     if (!this.props.accessToken) {
       console.error(
@@ -20,6 +26,9 @@ export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
     return memoryService(this.env, this.props.accessToken);
   }
 
+  /**
+   * Format a successful response
+   */
   formatResponse = (
     description: string,
     returnData: any
@@ -40,6 +49,9 @@ export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
     };
   };
 
+  /**
+   * Format an error response
+   */
   formatErrorResponse = (
     error: string,
     details?: any
@@ -58,6 +70,9 @@ export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
     };
   };
 
+  /**
+   * Get the MCP server instance
+   */
   get server() {
     const server = new McpServer({
       name: "Spydr Interaction Server (via MemoryMCP)",
@@ -134,6 +149,9 @@ export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
     );
     */
 
+    /**
+     * Find webs based on a query
+     */
     server.tool(
       "FindWebs",
       "Search for Webs (collections of related memories). Use this only if the user explicitly asks to search for webs, or if you need to narrow the memory search scope by webId.",
@@ -162,7 +180,10 @@ export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
       }
     );
 
-    server.tool(
+    /**
+     * Find memories based on a semantic query
+     */
+      server.tool(
       "FindMemories",
       "Search for memories using a semantic query. Optionally, limit the search to a specific web or memory. You can also call this tool multiple times (when instructed or to improve context quality) to orchestrate fine-grained context for responses.",
       {
