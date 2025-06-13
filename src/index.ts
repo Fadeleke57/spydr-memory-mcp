@@ -2,7 +2,7 @@ import { MemoryMCP } from "./MemoryMCP.ts";
 import {
   getStytchOAuthEndpointUrl,
   stytchBearerTokenAuthMiddleware,
-} from "./lib/auth";
+} from "./lib/auth.ts";
 import { cors } from "hono/cors";
 import { Hono } from "hono";
 
