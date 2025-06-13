@@ -7,7 +7,7 @@ import { memoryService } from "./MemoryService.ts";
 import { AuthenticationContext } from "../types";
 import { McpAgent } from "agents/mcp";
 
-export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
+export class MemoryMCP extends McpAgent<Cloudflare.Env, unknown, AuthenticationContext> {
   /**
    * Initialize the MCP agent
    */

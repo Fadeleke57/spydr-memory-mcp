@@ -9,7 +9,7 @@ import { Hono } from "hono";
 // so the Worker runtime can find it
 export { MemoryMCP };
 
-export default new Hono<{ Bindings: Env }>()
+export default new Hono<{ Bindings: Cloudflare.Env }>()
   .use(cors())
 
   .get("/health", (c) => {
