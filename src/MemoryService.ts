@@ -1,6 +1,9 @@
 class MemoryService {
   private API_URL: string;
 
+  /**
+   * Initialize the MemoryService
+   */
   constructor(private env: Env, private accessToken: string) {
     const baseUrl = this.env.API_URL;
     if (!baseUrl) {
@@ -10,6 +13,9 @@ class MemoryService {
     this.API_URL = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
   }
 
+  /**
+   * Make a request to the API
+   */
   private async makeRequest(
     path: string,
     method: "GET" | "POST" = "GET",
@@ -55,9 +61,9 @@ class MemoryService {
     }
     return response.json();
   }
+
   /**
-   * Searches for webs based on a query.
-   * Corresponds to Python endpoint: GET /search
+   * Search for webs based on a query
    */
   async searchWebs(query: string, scope: "User.all" | "All" = "All") {
     const apiPath = `/search/webs?query=${encodeURIComponent(
@@ -66,6 +72,9 @@ class MemoryService {
     return this.makeRequest(apiPath, "GET");
   }
 
+  /**
+   * Search for memories based on a semantic query
+   */
   async searchMemories(
     query: string,
     scope: "User.all" | "Web" = "User.all",
@@ -86,7 +95,7 @@ class MemoryService {
 
   /**
    * Retrieves a specific source by its ID.
-   * Corresponds to Python endpoint: GET /{source_id}
+   *    * Corresponds to Python endpoint: GET /{source_id}
   
   async getSourceById(sourceId: string) {
     // Ensure the path starts with a slash, and sourceId is URI encoded if it can contain special characters.

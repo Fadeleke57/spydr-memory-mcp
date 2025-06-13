@@ -2,7 +2,7 @@ import { MemoryMCP } from "./MemoryMCP.ts";
 import {
   getStytchOAuthEndpointUrl,
   stytchBearerTokenAuthMiddleware,
-} from "./lib/auth";
+} from "./lib/auth.ts";
 import { cors } from "hono/cors";
 import { Hono } from "hono";
 
@@ -25,7 +25,7 @@ export default new Hono<{ Bindings: Env }>()
   .get("/.well-known/oauth-authorization-server", async (c) => {
     return c.json({
       issuer: c.env.STYTCH_PROJECT_ID,
-      authorization_endpoint: `${c.env.CLIENT_URL}/oauth/authorize`, // Link to the OAuth Authorization screen implemented within the Next.JS UI
+      authorization_endpoint: `${c.env.CLIENT_URL}/oauth/authorize`, // link to the OAuth Authorization screen on spydr
       token_endpoint: getStytchOAuthEndpointUrl(c.env, "oauth2/token"),
       registration_endpoint: getStytchOAuthEndpointUrl(
         c.env,
