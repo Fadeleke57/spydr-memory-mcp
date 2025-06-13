@@ -4,7 +4,10 @@ class MemoryService {
   /**
    * Initialize the MemoryService
    */
-  constructor(private env: Cloudflare.Env, private accessToken: string) {
+  constructor(
+    private env: Cloudflare.Env,
+    private accessToken: string
+  ) {
     const baseUrl = this.env.API_URL;
     if (!baseUrl) {
       console.error("[MemoryService] API_URL is not configured.");

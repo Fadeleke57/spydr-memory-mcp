@@ -9,10 +9,10 @@
   "compatibility_flags": ["nodejs_compat"],
   "compatibility_date": "2025-03-19",
   "observability": {
-    "enabled": true
+    "enabled": true,
   },
   "dev": {
-    "port": 9000
+    "port": 9000,
   },
   /**
    * Smart Placement
@@ -28,22 +28,22 @@
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["MemoryMCP"]
+      "new_sqlite_classes": ["MemoryMCP"],
     },
   ],
   "durable_objects": {
     "bindings": [
       {
         "class_name": "MemoryMCP",
-        "name": "MCP_OBJECT"
-      }
-    ]
+        "name": "MCP_OBJECT",
+      },
+    ],
   },
   "kv_namespaces": [
     {
       "binding": "MEMORY",
-      "id": "8971e0d721ee4d3c95479107eb72c74f"
-    }
+      "id": "8971e0d721ee4d3c95479107eb72c74f",
+    },
   ],
   /**
    * Environment Variables
@@ -61,8 +61,8 @@
   "assets": {
     "run_worker_first": true,
     "not_found_handling": "single-page-application",
-    "binding": "ASSETS"
-  }
+    "binding": "ASSETS",
+  },
   /**
    * Service Bindings (communicate between multiple Workers)
    * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
