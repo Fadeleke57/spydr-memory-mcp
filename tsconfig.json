@@ -17,7 +17,7 @@
       "@/*": ["./src/*"]
     },
     "strict": true,
-    "jsx": "preserve",
+    "jsx": "preserve"
   },
   "allowJs": true,
   "skipLibCheck": true,

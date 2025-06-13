@@ -8,7 +8,7 @@ function logTokenPreview(label: string, token: string) {
   console.log(`[${label}] Token: ${token}`);
 }
 
-async function validateStytchJWT(token: string, env: Env) {
+async function validateStytchJWT(token: string, env: Cloudflare.Env) {
   if (!jwks) {
     console.log("[validateStytchJWT] JWKS not initialized");
     const jwksUrl = getStytchOAuthEndpointUrl(env, ".well-known/jwks.json");
@@ -33,7 +33,7 @@ export const stytchSessionAuthMiddleware = createMiddleware<{
     userID: string;
     sessionToken: string;
   };
-  Bindings: Env;
+  Bindings: Cloudflare.Env;
 }>(async (c, next) => {
   const sessionCookie = getCookie(c, "stytch_session_jwt");
   const sessionToken = getCookie(c, "stytch_session");
@@ -65,7 +65,7 @@ export const stytchSessionAuthMiddleware = createMiddleware<{
 });
 
 export const stytchBearerTokenAuthMiddleware = createMiddleware<{
-  Bindings: Env;
+  Bindings: Cloudflare.Env;
 }>(async (c, next) => {
   const authHeader = c.req.header("Authorization");
   console.log(
@@ -110,7 +110,7 @@ export const stytchBearerTokenAuthMiddleware = createMiddleware<{
 let jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
 
 // determine the correct Stytch public URL based on environment
-export function getStytchOAuthEndpointUrl(env: Env, endpoint: string): string {
+export function getStytchOAuthEndpointUrl(env: Cloudflare.Env, endpoint: string): string {
   const baseURL = env.STYTCH_PROJECT_ID.includes("test")
     ? "https://test.stytch.com/v1/public"
     : "https://api.stytch.com/v1/public";

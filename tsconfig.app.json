@@ -24,6 +24,6 @@
 
     /* Since we include the Hono app for client typegen we also need the worker types here */
     "types": ["./worker-configuration.d.ts"],
-    "baseUrl": ".",
-  },
+    "baseUrl": "."
+  }
 }

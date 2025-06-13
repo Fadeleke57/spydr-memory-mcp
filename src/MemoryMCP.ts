@@ -7,7 +7,11 @@ import { memoryService } from "./MemoryService.ts";
 import { AuthenticationContext } from "../types";
 import { McpAgent } from "agents/mcp";
 
-export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
+export class MemoryMCP extends McpAgent<
+  Cloudflare.Env,
+  unknown,
+  AuthenticationContext
+> {
   /**
    * Initialize the MCP agent
    */
@@ -183,7 +187,7 @@ export class MemoryMCP extends McpAgent<Env, unknown, AuthenticationContext> {
     /**
      * Find memories based on a semantic query
      */
-      server.tool(
+    server.tool(
       "FindMemories",
       "Search for memories using a semantic query. Optionally, limit the search to a specific web or memory. You can also call this tool multiple times (when instructed or to improve context quality) to orchestrate fine-grained context for responses.",
       {

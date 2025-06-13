@@ -11,12 +11,8 @@
     "cf-typegen": "wrangler types",
     "prepare": "husky install",
     "lint": "eslint . --ext .js,.ts",
-    "lint-staged": {
-      "**/*.{js,jsx,ts,tsx}": [
-        "prettier --write",
-        "eslint --fix"
-      ]
-    }
+    "prettier": "prettier --write",
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.7.0",
