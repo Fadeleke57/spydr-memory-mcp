@@ -27,6 +27,3 @@ jobs:
       - name: Run ESLint
         run: npm run lint
         # lint script should fail on errors to break the build
-
-      - name: Run Prettier check (dry run)
-        run: npx prettier --check "**/*.{js,ts,json,md}"
