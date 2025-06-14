@@ -24,7 +24,7 @@ Authentication is securely handled by [Stytch](https://stytch.com/), ensuring th
 
 ## Directory Structure
 
-
+```
 .
 ├── .husky/             # Git hooks (for commit messages)
 ├── src/
@@ -39,7 +39,7 @@ Authentication is securely handled by [Stytch](https://stytch.com/), ensuring th
 ├── eslint.config.js    # ESLint configuration
 ├── LICENSE             # Project License
 └── README.md           # This file
-
+```
 
 ## Getting Started
 
@@ -57,7 +57,7 @@ Follow these instructions to get a local instance of the server up and running f
 1.  **Clone the repository:**
     ```bash
     git clone <your-repository-url>
-    cd fadeleke57-spydr-memory-mcp
+    cd spydr-memory-mcp
     ```
 
 2.  **Install dependencies:**
