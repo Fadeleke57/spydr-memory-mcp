@@ -15,12 +15,15 @@ export class MemoryMCP extends McpAgent<
   /**
    * Initialize the MCP agent
    */
-  async init() {}
+  async init() {
+    console.log("[MemoryMCP] Initializing agent.");
+  }
 
   /**
    * Get the MemoryService instance
    */
   private get memoryService() {
+    console.log("[MemoryMCP] Accessing memoryService.");
     if (!this.props.accessToken) {
       console.error(
         "[MemoryMCP] AccessToken is not available in props. Ensure stytchBearerTokenAuthMiddleware populates it."
@@ -39,6 +42,7 @@ export class MemoryMCP extends McpAgent<
   ): {
     content: Array<{ type: "text"; text: string }>;
   } => {
+    console.log(`[MemoryMCP] Formatting success response: ${description}`);
     return {
       content: [
         {
@@ -62,13 +66,12 @@ export class MemoryMCP extends McpAgent<
   ): {
     content: Array<{ type: "text"; text: string }>;
   } => {
+    console.log(`[MemoryMCP] Formatting error response: ${error}`);
     return {
       content: [
         {
           type: "text",
-          text: `Error: ${error}\n\n${
-            details ? JSON.stringify(details, null, 2) : ""
-          }`,
+          text: `Error: ${error}\n\n${details ? JSON.stringify(details, null, 2) : ""}`,
         },
       ],
     };
@@ -78,80 +81,11 @@ export class MemoryMCP extends McpAgent<
    * Get the MCP server instance
    */
   get server() {
+    console.log("[MemoryMCP] Accessing server getter to build McpServer.");
     const server = new McpServer({
       name: "Spydr Interaction Server (via MemoryMCP)",
       version: "1.0.0",
     });
-
-    /*
-    server.resource(
-      "Source",
-      new ResourceTemplate("spydrapp://sources/{sourceId}", {
-        list: undefined,
-      }),
-      async (uri, { sourceId }) => {
-        let data;
-        try {
-          data = await this.webService.getSourceById(sourceId as string);
-        } catch (e: any) {
-          console.error(
-            `[MemoryMCP resource Source GET ${sourceId}] Error:`,
-            e
-          );
-          return {
-            contents: [
-              {
-                uri: uri.href,
-                text: `Error fetching source '${sourceId}': ${e.message}`,
-              },
-            ],
-          };
-        }
-        return {
-          contents: [
-            {
-              uri: uri.href,
-              text: `Success fetching source '${sourceId}': ${JSON.stringify(
-                data
-              )}`,
-            },
-          ],
-        };
-      }
-    );
-
-    server.resource(
-      "Web",
-      new ResourceTemplate("spydrapp://webs/{webId}", {
-        list: undefined,
-      }),
-      async (uri, { webId }) => {
-        try {
-          const data = await this.webService.getWebById(webId as string);
-          return {
-            contents: [
-              {
-                uri: uri.href,
-                text: `Success fetching web '${webId}': ${JSON.stringify(
-                  data
-                )}`,
-              },
-            ],
-          };
-        } catch (e: any) {
-          console.error(`[MemoryMCP resource Web GET ${webId}] Error:`, e);
-          return {
-            contents: [
-              {
-                uri: uri.href,
-                text: `Error fetching web '${webId}': ${e.message}`,
-              },
-            ],
-          };
-        }
-      }
-    );
-    */
 
     /**
      * Find webs based on a query
@@ -172,8 +106,10 @@ export class MemoryMCP extends McpAgent<
           ),
       },
       async ({ query, scope }) => {
+        console.log(`[MCP Tool: FindWebs] Called with query: "${query}", scope: "${scope}"`);
         try {
           const data = await this.memoryService.searchWebs(query, scope);
+          console.log(`[MCP Tool: FindWebs] Successfully found ${data.webs.length} webs.`);
           return this.formatResponse("Successfully found matching webs.", data);
         } catch (e: any) {
           console.error(`[MCP Tool: Find Webs] Error:`, e);
@@ -217,6 +153,7 @@ export class MemoryMCP extends McpAgent<
           ),
       },
       async ({ webId, query, sourceId, scope }) => {
+        console.log(`[MCP Tool: FindMemories] Called with query: "${query}", scope: "${scope}", webId: "${webId}", sourceId: "${sourceId}"`);
         let parsedWebId, parsedSourceId;
         if (webId) {
           parsedWebId = webId
@@ -239,6 +176,7 @@ export class MemoryMCP extends McpAgent<
             parsedWebId,
             parsedSourceId
           );
+          console.log(`[MCP Tool: FindMemories] Search completed. Found ${data.length} memories.`);
           return this.formatResponse(
             "Memory search completed successfully.",
             data
