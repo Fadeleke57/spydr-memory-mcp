@@ -30,4 +30,6 @@ dist-ssr
 !.dev.vars.example
 
 # env
+.env
+.env.*
 .env.prod

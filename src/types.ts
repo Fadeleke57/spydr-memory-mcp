@@ -1,4 +1,5 @@
-// context from the auth process, extracted from the Stytch auth token JWT and provided to the MCP Server as this.props
+// Context from the auth process, extracted from the Stytch auth token JWT
+// and provided to the MCP Server as this.props
 export type AuthenticationContext = {
   claims: {
     iss: string;
@@ -12,6 +13,18 @@ export type AuthenticationContext = {
     jti: string;
   };
   accessToken: string;
+};
+
+export type UpdateStytchConnectedAppBody = {
+  client_name?: string;
+  client_description?: string;
+  redirect_urls?: string[];
+  access_token_expiry_minutes?: number;
+  post_logout_redirect_urls?: string[];
+  full_access_allowed?: boolean;
+  access_token_template_content?: string;
+  logo_url?: string;
+  bypass_consent_for_offline_access?: boolean;
 };
 
 export enum Client {
