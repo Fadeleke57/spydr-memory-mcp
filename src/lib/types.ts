@@ -15,6 +15,21 @@ export type AuthenticationContext = {
   accessToken: string;
 };
 
+export type AddToSpydrMemoryRequest = {
+  client: Client;
+  content: Content;
+  webId?: string;
+  clientId?: string;
+};
+
+export type SearchSpydrMemoriesRequest = {
+  query: string;
+  scope: "User.all" | "Web";
+  webId?: string;
+  sourceId?: string;
+  clientId?: string;
+};
+
 export type UpdateStytchConnectedAppBody = {
   client_name?: string;
   client_description?: string;
@@ -38,6 +53,7 @@ export enum Client {
   Continue = "Continue",
   "Roo-Cline" = "Roo-Cline",
   Encovo = "Encovo",
+  HighlightAI = "Highlight AI",
 }
 
 export type Message = {

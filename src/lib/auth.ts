@@ -2,7 +2,7 @@ import { createRemoteJWKSet, jwtVerify } from "jose";
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
 import { getCookie } from "hono/cookie";
-import { getStytchOAuthEndpointUrl, updateStytchConnectedApp } from "../utils";
+import { getStytchOAuthEndpointUrl, updateStytchConnectedApp } from "./utils";
 
 function logTokenPreview(label: string, token: string) {
   console.log(`[${label}] Token: ${token}`);
@@ -24,6 +24,10 @@ async function validateStytchJWT(token: string, env: Cloudflare.Env) {
     typ: "JWT",
     algorithms: ["RS256"],
   });
+
+  if (!response.payload.client_id) {
+    throw new HTTPException(401, { message: "Client ID not found in JWT" });
+  }
   console.log("[validateStytchJWT] JWT verified", response.payload);
   const payload = response.payload;
   const clientId = payload.client_id as string;

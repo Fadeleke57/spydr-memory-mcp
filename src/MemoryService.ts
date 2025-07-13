@@ -1,4 +1,4 @@
-import { Client, Content } from "../types";
+import { AddToSpydrMemoryRequest, Client, Content } from "./lib/types";
 
 class MemoryService {
   private API_URL: string;
@@ -8,7 +8,8 @@ class MemoryService {
    */
   constructor(
     private env: Cloudflare.Env,
-    private accessToken: string
+    private accessToken: string,
+    public clientId?: string
   ) {
     const baseUrl = this.env.API_URL;
     if (!baseUrl) {
@@ -80,34 +81,31 @@ class MemoryService {
   /**
    * Search for memories based on a semantic query
    */
-  async searchMemories(
+  async searchSpydrMemories(
     query: string,
     scope: "User.all" | "Web" = "User.all",
     webId?: string,
     sourceId?: string
   ) {
-    let apiPath = `/search/memories?query=${encodeURIComponent(
-      query
-    )}&scope=${encodeURIComponent(scope)}`;
-    if (webId) {
-      apiPath += `&webId=${encodeURIComponent(webId)}`;
-    }
-    if (sourceId) {
-      apiPath += `&sourceId=${encodeURIComponent(sourceId)}`;
-    }
+    const params = new URLSearchParams({
+      query,
+      scope,
+    });
+    if (webId) params.append("webId", webId);
+    if (sourceId) params.append("sourceId", sourceId);
+    if (this.clientId) params.append("clientId", this.clientId);
+
+    const apiPath = `/search/memories?${params.toString()}`;
     return this.makeRequest(apiPath, "GET");
   }
 
-  async addToMemory(
-    client: Client,
-    content: Content,
-    webId?: string,
-  ) {
+  async addToSpydrMemory(client: Client, content: Content, webId?: string) {
     const apiPath = `/add/memory`;
-    const body = {
+    const body: AddToSpydrMemoryRequest = {
       client,
       content,
       webId,
+      clientId: this.clientId,
     };
     return this.makeRequest(apiPath, "POST", body);
   }
@@ -134,5 +132,8 @@ class MemoryService {
   }*/
 }
 
-export const memoryService = (env: Cloudflare.Env, accessToken: string) =>
-  new MemoryService(env, accessToken);
+export const memoryService = (
+  env: Cloudflare.Env,
+  accessToken: string,
+  clientId?: string
+) => new MemoryService(env, accessToken, clientId);

@@ -13,24 +13,3 @@ export type AuthenticationContext = {
   };
   accessToken: string;
 };
-
-export enum Client {
-  Claude = "Claude",
-  ChatGPT = "ChatGPT",
-  "Cascade - Windsurf" = "Cascade - Windsurf",
-  Cursor = "Cursor",
-  Cline = "Cline",
-  Warp = "Warp",
-  Other = "Other",
-  Continue = "Continue",
-  "Roo-Cline" = "Roo-Cline",
-  Encovo = "Encovo",
-}
-
-export type Message = {
-  content: string;
-  role: Client | "User";
-};
-
-export type Messages = Message[];
-export type Content = string | Messages;
