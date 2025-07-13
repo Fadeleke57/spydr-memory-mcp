@@ -54,6 +54,7 @@ export enum Client {
   "Roo-Cline" = "Roo-Cline",
   Encovo = "Encovo",
   HighlightAI = "Highlight AI",
+  Raycast = "Raycast",
 }
 
 export type Message = {
