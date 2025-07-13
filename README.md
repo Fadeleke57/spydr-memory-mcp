@@ -24,7 +24,7 @@ Authentication is securely handled by [Stytch](https://stytch.com/), ensuring th
 
 ## Directory Structure
 
-
+```
 .
 ├── .husky/             # Git hooks (for commit messages)
 ├── src/
@@ -39,7 +39,7 @@ Authentication is securely handled by [Stytch](https://stytch.com/), ensuring th
 ├── eslint.config.js    # ESLint configuration
 ├── LICENSE             # Project License
 └── README.md           # This file
-
+```
 
 ## Getting Started
 
@@ -57,7 +57,7 @@ Follow these instructions to get a local instance of the server up and running f
 1.  **Clone the repository:**
     ```bash
     git clone <your-repository-url>
-    cd fadeleke57-spydr-memory-mcp
+    cd spydr-memory-mcp
     ```
 
 2.  **Install dependencies:**
@@ -112,6 +112,18 @@ The server exposes the following endpoints:
 * `GET /.well-known/oauth-authorization-server`: OAuth discovery endpoint for client registration.
 * `POST /mcp`: The main endpoint for handling MCP requests from AI agents. This endpoint is protected by bearer token authentication.
 * `GET /sse/*`: A Server-Sent Events (SSE) endpoint for streaming MCP responses. Also protected by bearer token authentication.
+
+## Testing
+
+Start the MCP Inspector to test out specific tools or functionality
+
+```bash
+npx @modelcontextprotocol/inspector  
+```
+Then open the inspector with a proxy token (i.e `http://localhost:6274/?MCP_PROXY_AUTH_TOKEN=8265d5d6a7251a442023df8b7f96a9fbc9ee10781522cba196de29a52e2188fa`)
+
+Once you open the inspector, authenticate with spydr running in the localhost and you should be good to go!
+
 
 ## MCP Tools
 

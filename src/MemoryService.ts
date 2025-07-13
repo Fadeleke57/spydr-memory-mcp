@@ -1,3 +1,5 @@
+import { Client, Content } from "../types";
+
 class MemoryService {
   private API_URL: string;
 
@@ -94,6 +96,20 @@ class MemoryService {
       apiPath += `&sourceId=${encodeURIComponent(sourceId)}`;
     }
     return this.makeRequest(apiPath, "GET");
+  }
+
+  async addToMemory(
+    client: Client,
+    content: Content,
+    webId?: string,
+  ) {
+    const apiPath = `/add/memory`;
+    const body = {
+      client,
+      content,
+      webId,
+    };
+    return this.makeRequest(apiPath, "POST", body);
   }
 
   /**

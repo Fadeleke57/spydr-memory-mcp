@@ -1,9 +1,9 @@
 console.log("Initializing Spydr Memory MCP server...");
 import { MemoryMCP } from "./MemoryMCP.ts";
 import {
-  getStytchOAuthEndpointUrl,
   stytchBearerTokenAuthMiddleware,
 } from "./lib/auth.ts";
+import { getStytchOAuthEndpointUrl } from "./utils";
 import { cors } from "hono/cors";
 import { Hono } from "hono";
 

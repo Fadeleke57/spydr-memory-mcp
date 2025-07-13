@@ -2,7 +2,7 @@ import { createRemoteJWKSet, jwtVerify } from "jose";
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
 import { getCookie } from "hono/cookie";
-
+import { getStytchOAuthEndpointUrl, updateStytchConnectedApp } from "../utils";
 
 function logTokenPreview(label: string, token: string) {
   console.log(`[${label}] Token: ${token}`);
@@ -25,6 +25,13 @@ async function validateStytchJWT(token: string, env: Cloudflare.Env) {
     algorithms: ["RS256"],
   });
   console.log("[validateStytchJWT] JWT verified", response.payload);
+  const payload = response.payload;
+  const clientId = payload.client_id as string;
+
+  updateStytchConnectedApp(env, clientId, {
+    access_token_expiry_minutes: 480, // 8 hours
+  });
+
   return response;
 }
 
@@ -108,15 +115,3 @@ export const stytchBearerTokenAuthMiddleware = createMiddleware<{
 });
 
 let jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
-
-// determine the correct Stytch public URL based on environment
-export function getStytchOAuthEndpointUrl(env: Cloudflare.Env, endpoint: string): string {
-  const baseURL = env.STYTCH_PROJECT_ID.includes("test")
-    ? "https://test.stytch.com/v1/public"
-    : "https://api.stytch.com/v1/public";
-
-  console.log(
-    `[getStytchOAuthEndpointUrl] Base URL: ${baseURL}, Endpoint: ${endpoint}`
-  );
-  return `${baseURL}/${env.STYTCH_PROJECT_ID}/${endpoint}`;
-}

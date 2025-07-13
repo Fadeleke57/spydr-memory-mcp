@@ -3,9 +3,10 @@
 declare namespace Cloudflare {
   interface Env {
     MEMORY: KVNamespace;
-    STYTCH_PROJECT_ID: "project-live-afb7b471-8371-4890-9eab-6f683b51fe32";
-    CLIENT_URL: "https://memory.spydr.dev";
-    API_URL: "https://vercel.spydr.dev";
+    STYTCH_PROJECT_ID: string;
+    STYTCH_SECRET: string;
+    CLIENT_URL: string;
+    API_URL: string;
     MCP_OBJECT: DurableObjectNamespace<import("./src/index").MemoryMCP>;
     ASSETS: Fetcher;
   }

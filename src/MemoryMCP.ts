@@ -4,8 +4,13 @@ import {
 } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { memoryService } from "./MemoryService.ts";
-import { AuthenticationContext } from "../types";
+import { AuthenticationContext, Client } from "./types.ts";
 import { McpAgent } from "agents/mcp";
+
+const Message = z.object({
+  content: z.string(),
+  role: z.union([z.nativeEnum(Client), z.literal("User")]),
+});
 
 export class MemoryMCP extends McpAgent<
   Cloudflare.Env,
@@ -184,6 +189,49 @@ export class MemoryMCP extends McpAgent<
         } catch (e: any) {
           console.error("[MCP Tool: Find Memories] Error:", e);
           return this.formatErrorResponse("Could not search memories.", {
+            message: e.message,
+          });
+        }
+      }
+    );
+
+    server.tool(
+      "AddToMemory",
+      "Add a new memory to the user's memory collection. This tool should be used when the user explicitly asks to add a memory, or when you need to add a memory to the user's memory collection.",
+      {
+        client: z
+          .nativeEnum(Client)
+          .describe(
+            "The client that generated the memory. This should be the name of the client that generated the memory."
+          ),
+        content: z
+          .union([z.string(), z.array(Message)])
+          .describe(
+            "The content of the memory. This should be the content of the memory."
+          ),
+        webId: z
+          .string()
+          .optional()
+          .describe(
+            "The ID of the web to add the memory to. Required if the user ever says to refer to a specific web."
+          ),
+      },
+      async ({ client, content, webId }) => {
+        console.log("[MCP Tool: Add To Memory] Adding memory:", {
+          client,
+          content,
+          webId,
+        });
+        try {
+          const data = await this.memoryService.addToMemory(
+            client,
+            content,
+            webId
+          );
+          return this.formatResponse("Memory added successfully.", data);
+        } catch (e: any) {
+          console.error("[MCP Tool: Add To Memory] Error:", e);
+          return this.formatErrorResponse("Could not add memory.", {
             message: e.message,
           });
         }
