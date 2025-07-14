@@ -38,6 +38,20 @@ export default new Hono<{ Bindings: Cloudflare.Env }>()
     });
   })
 
+  .get("/.well-known/oauth-protected-resource", async (c) => {
+    const url = new URL(c.req.url);
+    return c.json({
+      resource: url.origin,
+      authorization_servers: [c.env.STYTCH_DOMAIN],
+      scopes_supported: ["openid", "profile", "email", "offline_access"],
+      response_types_supported: ["code"],
+      response_modes_supported: ["query"],
+      grant_types_supported: ["authorization_code", "refresh_token"],
+      token_endpoint_auth_methods_supported: ["none"],
+      code_challenge_methods_supported: ["S256"],
+    });
+  })
+
   // let the MCP Server have a go at handling the request
   .use("/sse/*", stytchBearerTokenAuthMiddleware)
   .route("/sse", new Hono().mount("/", MemoryMCP.serveSSE("/sse").fetch))
@@ -45,5 +59,5 @@ export default new Hono<{ Bindings: Cloudflare.Env }>()
   .use("/mcp", stytchBearerTokenAuthMiddleware)
   .route("/mcp", new Hono().mount("/", MemoryMCP.serve("/mcp").fetch));
 
-// no static assets yet, but we'll add them later: TODO - Start the memory management UI
+// no static assets yet, but we'll add them later so they exist on the memory.spydr.dev namespace
 //.mount("/", (req, env) => env.ASSETS.fetch(req));

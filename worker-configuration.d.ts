@@ -5,6 +5,7 @@ declare namespace Cloudflare {
     MEMORY: KVNamespace;
     STYTCH_PROJECT_ID: string;
     STYTCH_SECRET: string;
+    STYTCH_DOMAIN: string;
     CLIENT_URL: string;
     API_URL: string;
     MCP_OBJECT: DurableObjectNamespace<import("./src/index").MemoryMCP>;
