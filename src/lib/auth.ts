@@ -43,6 +43,7 @@ export const stytchSessionAuthMiddleware = createMiddleware<{
   Variables: {
     userID: string;
     sessionToken: string;
+    clientId: string;
   };
   Bindings: Cloudflare.Env;
 }>(async (c, next) => {
@@ -64,6 +65,7 @@ export const stytchSessionAuthMiddleware = createMiddleware<{
     );
     c.set("userID", verifyResult.payload.sub!);
     c.set("sessionToken", sessionToken ?? "");
+    c.set("clientId", verifyResult.payload.client_id as string);
   } catch (error) {
     console.error("[SessionMiddleware] Authentication failed:", error);
     throw new HTTPException(401, { message: "Unauthenticated" });

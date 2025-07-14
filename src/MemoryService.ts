@@ -1,4 +1,8 @@
-import { AddToSpydrMemoryRequest, Client, Content } from "./lib/types";
+import {
+  AddToSpydrMemoryRequest,
+  Client,
+  Content,
+} from "./lib/types";
 
 class MemoryService {
   private API_URL: string;
@@ -9,7 +13,7 @@ class MemoryService {
   constructor(
     private env: Cloudflare.Env,
     private accessToken: string,
-    public clientId?: string
+    public clientId: string
   ) {
     const baseUrl = this.env.API_URL;
     if (!baseUrl) {
@@ -89,7 +93,7 @@ class MemoryService {
   ) {
     const params = new URLSearchParams({
       query,
-      scope,
+      scope
     });
     if (webId) params.append("webId", webId);
     if (sourceId) params.append("sourceId", sourceId);
@@ -135,5 +139,5 @@ class MemoryService {
 export const memoryService = (
   env: Cloudflare.Env,
   accessToken: string,
-  clientId?: string
+  clientId: string
 ) => new MemoryService(env, accessToken, clientId);
