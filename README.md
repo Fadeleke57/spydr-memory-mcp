@@ -113,6 +113,18 @@ The server exposes the following endpoints:
 * `POST /mcp`: The main endpoint for handling MCP requests from AI agents. This endpoint is protected by bearer token authentication.
 * `GET /sse/*`: A Server-Sent Events (SSE) endpoint for streaming MCP responses. Also protected by bearer token authentication.
 
+## Testing
+
+Start the MCP Inspector to test out specific tools or functionality
+
+```bash
+npx @modelcontextprotocol/inspector  
+```
+Then open the inspector with a proxy token (i.e `http://localhost:6274/?MCP_PROXY_AUTH_TOKEN=8265d5d6a7251a442023df8b7f96a9fbc9ee10781522cba196de29a52e2188fa`)
+
+Once you open the inspector, authenticate with spydr running in the localhost and you should be good to go!
+
+
 ## MCP Tools
 
 The core functionality is exposed through the following MCP tools:
