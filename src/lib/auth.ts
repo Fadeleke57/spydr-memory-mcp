@@ -2,7 +2,7 @@ import { createRemoteJWKSet, jwtVerify } from "jose";
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
 import { getCookie } from "hono/cookie";
-import { getStytchOAuthEndpointUrl, updateStytchConnectedApp } from "../utils";
+import { getStytchOAuthEndpointUrl, updateStytchConnectedApp } from "./utils";
 
 function logTokenPreview(label: string, token: string) {
   console.log(`[${label}] Token: ${token}`);
@@ -24,6 +24,10 @@ async function validateStytchJWT(token: string, env: Cloudflare.Env) {
     typ: "JWT",
     algorithms: ["RS256"],
   });
+
+  if (!response.payload.client_id) {
+    throw new HTTPException(401, { message: "Client ID not found in JWT" });
+  }
   console.log("[validateStytchJWT] JWT verified", response.payload);
   const payload = response.payload;
   const clientId = payload.client_id as string;
@@ -39,6 +43,7 @@ export const stytchSessionAuthMiddleware = createMiddleware<{
   Variables: {
     userID: string;
     sessionToken: string;
+    clientId: string;
   };
   Bindings: Cloudflare.Env;
 }>(async (c, next) => {
@@ -60,6 +65,7 @@ export const stytchSessionAuthMiddleware = createMiddleware<{
     );
     c.set("userID", verifyResult.payload.sub!);
     c.set("sessionToken", sessionToken ?? "");
+    c.set("clientId", verifyResult.payload.client_id as string);
   } catch (error) {
     console.error("[SessionMiddleware] Authentication failed:", error);
     throw new HTTPException(401, { message: "Unauthenticated" });
