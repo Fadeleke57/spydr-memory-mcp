@@ -184,7 +184,7 @@ export class MemoryMCP extends McpAgent<
         content: z
           .union([z.string(), z.array(Message)])
           .describe(
-            "The content of the memory. This should be the content of the memory."
+            "The content of the memory. This should be the content of the memory. Try to be as detailed as possible."
           ),
       },
       async ({ client, content }) => {
