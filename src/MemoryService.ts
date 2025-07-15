@@ -103,12 +103,11 @@ class MemoryService {
     return this.makeRequest(apiPath, "GET");
   }
 
-  async addToSpydrMemory(client: Client, content: Content, webId?: string) {
+  async addToSpydrMemory(client: Client, content: Content) {
     const apiPath = `/add/memory`;
     const body: AddToSpydrMemoryRequest = {
       client,
       content,
-      webId,
       clientId: this.clientId,
     };
     return this.makeRequest(apiPath, "POST", body);
