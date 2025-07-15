@@ -99,39 +99,6 @@ export class MemoryMCP extends McpAgent<
     });
 
     /**
-     * Find webs based on a query
-     */
-    server.tool(
-      "FindWebs",
-      "Search for Webs (collections of related memories). Use this only if the user explicitly asks to search for webs, or if you need to narrow the memory search scope by webId.",
-      {
-        query: z
-          .string()
-          .describe("The search query for finding relevant webs."),
-        scope: z
-          .enum(["User.all", "All"])
-          .optional()
-          .default("All")
-          .describe(
-            `"User.all" searches only the user's own webs. "All" includes both public webs and the user's private ones. You should only use User.all if the user asks to search within their own webs.`
-          ),
-      },
-      async ({ query, scope }) => {
-        console.log(`[MCP Tool: FindWebs] Called with query: "${query}", scope: "${scope}"`);
-        try {
-          const data = await this.memoryService.searchWebs(query, scope);
-          console.log(`[MCP Tool: FindWebs] Successfully found ${data.webs.length} webs.`);
-          return this.formatResponse("Successfully found matching webs.", data);
-        } catch (e: any) {
-          console.error(`[MCP Tool: Find Webs] Error:`, e);
-          return this.formatErrorResponse("Could not find any webs.", {
-            message: e.message,
-          });
-        }
-      }
-    );
-
-    /**
      * Find memories based on a tactical semantic query
      */
     server.tool(
@@ -164,7 +131,9 @@ export class MemoryMCP extends McpAgent<
           ),
       },
       async ({ webId, query, sourceId, scope }) => {
-        console.log(`[MCP Tool: FindMemories] Called with query: "${query}", scope: "${scope}", webId: "${webId}", sourceId: "${sourceId}"`);
+        console.log(
+          `[MCP Tool: FindMemories] Called with query: "${query}", scope: "${scope}", webId: "${webId}", sourceId: "${sourceId}"`
+        );
         let parsedWebId, parsedSourceId;
         if (webId) {
           parsedWebId = webId
@@ -187,7 +156,9 @@ export class MemoryMCP extends McpAgent<
             parsedWebId,
             parsedSourceId
           );
-          console.log(`[MCP Tool: FindMemories] Search completed. Found ${data.length} memories.`);
+          console.log(
+            `[MCP Tool: FindMemories] Search completed. Found ${data.length} memories.`
+          );
           return this.formatResponse(
             "Memory search completed successfully.",
             data
@@ -213,34 +184,18 @@ export class MemoryMCP extends McpAgent<
         content: z
           .union([z.string(), z.array(Message)])
           .describe(
-            "The content of the memory. This should be the content of the memory."
-          ),
-        webId: z
-          .string()
-          .optional()
-          .describe(
-            "The ID of the web to add the memory to. Required if the user ever says to refer to a specific web."
+            "The content of the memory. This should be the content of the memory. Try to be as detailed as possible."
           ),
       },
-      async ({ client, content, webId }) => {
+      async ({ client, content }) => {
         console.log("[MCP Tool: Add To Memory] Adding memory:", {
           client,
           content,
-          webId,
         });
         try {
-          let parsedWebId;
-          if (webId) {
-            parsedWebId = webId
-              .replace("@Web-", "")
-              .replace("Web-", "")
-              .replace("Web", "")
-              .replace("@", "");
-          }
           const data = await this.memoryService.addToSpydrMemory(
             client,
-            content,
-            parsedWebId
+            content
           );
           return this.formatResponse("Memory added successfully.", data);
         } catch (e: any) {

@@ -13,7 +13,9 @@ export default new Hono<{ Bindings: Cloudflare.Env }>()
   .use("*", async (c, next) => {
     console.log(`[index.ts] Request: ${c.req.method} ${c.req.url}`);
     await next();
-    console.log(`[index.ts] Response: ${c.req.method} ${c.req.url} - ${c.res.status}`);
+    console.log(
+      `[index.ts] Response: ${c.req.method} ${c.req.url} - ${c.res.status}`
+    );
   })
   .get("/health", (c) => {
     console.log("[index.ts] Handling /health request");
@@ -22,21 +24,25 @@ export default new Hono<{ Bindings: Cloudflare.Env }>()
 
   // redirect to the memory management UI
   .get("/", (c) => {
-    console.log("[index.ts] Handling / request, redirecting to spydr.dev/memory");
+    console.log(
+      "[index.ts] Handling / request, redirecting to spydr.dev/memory"
+    );
     return c.redirect(`${c.env.CLIENT_URL}/memory`, 302);
   })
 
   // serve the OAuth Authorization Server response for Dynamic Client Registration
   .get("/.well-known/oauth-authorization-server", async (c) => {
-    console.log("[index.ts] Handling /.well-known/oauth-authorization-server request");
+    console.log(
+      "[index.ts] Handling /.well-known/oauth-authorization-server request"
+    );
     return c.json({
-      issuer: c.env.STYTCH_PROJECT_ID,
+      issuer: c.env.STYTCH_PROJECT_ID, // my project ID
       authorization_endpoint: `${c.env.CLIENT_URL}/oauth/authorize`, // link to the OAuth Authorization screen on spydr
-      token_endpoint: getStytchOAuthEndpointUrl(c.env, "oauth2/token"),
+      token_endpoint: getStytchOAuthEndpointUrl(c.env, "oauth2/token"), //link to where the client should exchange the authorization code for an access token
       registration_endpoint: getStytchOAuthEndpointUrl(
         c.env,
         "oauth2/register"
-      ),
+      ), //link to where the client should dynamically register
       scopes_supported: ["openid", "profile", "email", "offline_access"],
       response_types_supported: ["code"],
       response_modes_supported: ["query"],
@@ -46,14 +52,18 @@ export default new Hono<{ Bindings: Cloudflare.Env }>()
     });
   })
 
-  // let the MCP Server have a go at handling the request
+  // let the MCP Server have a go at handling the request (deprecated)
   .use("/sse/*", (c, next) => {
-    console.log("[index.ts] Applying stytchBearerTokenAuthMiddleware for /sse/*");
+    // server sent events
+    console.log(
+      "[index.ts] Applying stytchBearerTokenAuthMiddleware for /sse/*"
+    );
     return stytchBearerTokenAuthMiddleware(c, next);
   })
   .route("/sse", new Hono().mount("/", MemoryMCP.serveSSE("/sse").fetch))
 
   .use("/mcp", (c, next) => {
+    // http streaming (preferred)
     console.log("[index.ts] Applying stytchBearerTokenAuthMiddleware for /mcp");
     return stytchBearerTokenAuthMiddleware(c, next);
   })
