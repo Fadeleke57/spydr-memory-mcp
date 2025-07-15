@@ -1,9 +1,7 @@
 console.log("Initializing Spydr Memory MCP server...");
 import { MemoryMCP } from "./MemoryMCP.ts";
-import {
-  stytchBearerTokenAuthMiddleware,
-} from "./lib/auth.ts";
-import { getStytchOAuthEndpointUrl } from "./utils";
+import { stytchBearerTokenAuthMiddleware } from "./lib/auth.ts";
+import { getStytchOAuthEndpointUrl } from "./lib/utils.ts";
 import { cors } from "hono/cors";
 import { Hono } from "hono";
 
@@ -22,10 +20,10 @@ export default new Hono<{ Bindings: Cloudflare.Env }>()
     return c.json({ status: 200, message: "ok" });
   })
 
-  // redirect to spydr.dev/memory
+  // redirect to the memory management UI
   .get("/", (c) => {
     console.log("[index.ts] Handling / request, redirecting to spydr.dev/memory");
-    return c.redirect("https://spydr.dev/memory", 302);
+    return c.redirect(`${c.env.CLIENT_URL}/memory`, 302);
   })
 
   // serve the OAuth Authorization Server response for Dynamic Client Registration

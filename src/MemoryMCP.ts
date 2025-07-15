@@ -4,7 +4,7 @@ import {
 } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { memoryService } from "./MemoryService.ts";
-import { AuthenticationContext, Client } from "./types.ts";
+import { AuthenticationContext, Client } from "./lib/types.ts";
 import { McpAgent } from "agents/mcp";
 
 const Message = z.object({
@@ -29,13 +29,19 @@ export class MemoryMCP extends McpAgent<
    */
   private get memoryService() {
     console.log("[MemoryMCP] Accessing memoryService.");
-    if (!this.props.accessToken) {
+    if (!this.props.accessToken || !this.props.claims.client_id) {
       console.error(
-        "[MemoryMCP] AccessToken is not available in props. Ensure stytchBearerTokenAuthMiddleware populates it."
+        "[MemoryMCP] AccessToken or Client ID is not available in props. Ensure stytchBearerTokenAuthMiddleware populates it."
       );
-      throw new Error("Access token not available for MemoryService.");
+      throw new Error(
+        "Access token or client ID not available for MemoryService."
+      );
     }
-    return memoryService(this.env, this.props.accessToken);
+    return memoryService(
+      this.env,
+      this.props.accessToken,
+      this.props.claims.client_id
+    );
   }
 
   /**
@@ -126,16 +132,16 @@ export class MemoryMCP extends McpAgent<
     );
 
     /**
-     * Find memories based on a semantic query
+     * Find memories based on a tactical semantic query
      */
     server.tool(
-      "FindMemories",
-      "Search for memories using a semantic query. Optionally, limit the search to a specific web or memory. You can also call this tool multiple times (when instructed or to improve context quality) to orchestrate fine-grained context for responses.",
+      "FindSpydrMemories",
+      "Search for memories using a tactical semantic query. Optionally, limit the search to a specific web or memory. You can also call this tool multiple times (when instructed or to improve context quality) to orchestrate fine-grained context for responses.",
       {
         query: z
           .string()
           .describe(
-            "The semantic query used to search within the user's memories."
+            "The tactical semantic query used to search within the user's memories."
           ),
         scope: z
           .enum(["User.all", "Web"])
@@ -175,7 +181,7 @@ export class MemoryMCP extends McpAgent<
             .replace("@", "");
         }
         try {
-          const data = await this.memoryService.searchMemories(
+          const data = await this.memoryService.searchSpydrMemories(
             query,
             scope,
             parsedWebId,
@@ -196,7 +202,7 @@ export class MemoryMCP extends McpAgent<
     );
 
     server.tool(
-      "AddToMemory",
+      "AddToSpydrMemory",
       "Add a new memory to the user's memory collection. This tool should be used when the user explicitly asks to add a memory, or when you need to add a memory to the user's memory collection.",
       {
         client: z
@@ -223,10 +229,18 @@ export class MemoryMCP extends McpAgent<
           webId,
         });
         try {
-          const data = await this.memoryService.addToMemory(
+          let parsedWebId;
+          if (webId) {
+            parsedWebId = webId
+              .replace("@Web-", "")
+              .replace("Web-", "")
+              .replace("Web", "")
+              .replace("@", "");
+          }
+          const data = await this.memoryService.addToSpydrMemory(
             client,
             content,
-            webId
+            parsedWebId
           );
           return this.formatResponse("Memory added successfully.", data);
         } catch (e: any) {
