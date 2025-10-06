@@ -21,7 +21,7 @@
     "@stytch/react": "^19.4.1",
     "@stytch/vanilla-js": "^5.37.0",
     "@tailwindcss/vite": "^4.1.7",
-    "agents": "^0.0.88",
+    "agents": "^0.2.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "hono": "^4.7.4",
